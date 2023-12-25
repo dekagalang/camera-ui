@@ -1,211 +1,177 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import {
-  SafeAreaView,
-  // ScrollView,
-  StatusBar,
-  useColorScheme,
-} from 'react-native';
-import {Camera, CameraPermissionStatus} from 'react-native-vision-camera';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
-import {config} from '@gluestack-ui/config';
-import {
-  GluestackUIProvider,
-  Box,
-  // Text,
-  // Image,
+  View,
+  StyleSheet,
   Button,
-  ButtonText,
-} from '@gluestack-ui/themed';
+  TouchableOpacity,
+  Text,
+  Linking,
+  Image,
+} from 'react-native';
+import {Camera, useCameraDevices} from 'react-native-vision-camera';
 
-// const FeatureCard = ({iconSvg, name, desc}: any) => {
-//   return (
-//     <Box
-//       flexDirection="column"
-//       borderWidth={1}
-//       borderColor="$borderDark700"
-//       flex={1}
-//       m="$2"
-//       p="$4"
-//       rounded="$md">
-//       <Box alignItems="center" display="flex" flexDirection="row">
-//         <Image source={iconSvg} alt="document" width={22} height={22} />
-//         <Text fontSize={22} color="$white" fontWeight="500" ml="$2">
-//           {name}
-//         </Text>
-//       </Box>
-//       <Text color="$textDark400" mt="$2">
-//         {desc}
-//       </Text>
-//     </Box>
-//   );
-// };
+function App() {
+  const camera = useRef<any>(null);
+  const devices = useCameraDevices();
+  const device = devices.back;
 
-// const Container = () => {
-//   const gradientImage = require('./assets/gradient.svg');
-//   const documentImage = require('./assets/document-data.svg');
-//   const lightbulbImage = require('./assets/lightbulb-person.svg');
-//   const rocketImage = require('./assets/rocket.svg');
-//   return (
-//     <Box flex={1} bg="$black" h="100%">
-//       <ScrollView contentInsetAdjustmentBehavior="automatic">
-//         <Box
-//           position="absolute"
-//           sx={{
-//             '@base': {
-//               h: 500,
-//               w: 500,
-//             },
-//             '@lg': {
-//               h: 700,
-//               w: 700,
-//             },
-//           }}>
-//           <Image source={gradientImage} alt="Gradient" h="100%" w="100%" />
-//         </Box>
-//         <Box
-//           flex={1}
-//           sx={{
-//             '@base': {
-//               my: '$16',
-//               mx: '$5',
-//             },
-//             '@lg': {
-//               my: '$24',
-//               mx: '$32',
-//             },
-//           }}
-//           alignItems="center">
-//           <Box
-//             bg="#64748B33"
-//             py="$2"
-//             px="$6"
-//             rounded="$full"
-//             alignItems="center"
-//             sx={{
-//               '@base': {
-//                 flexDirection: 'column',
-//               },
-//               '@sm': {
-//                 flexDirection: 'row',
-//               },
-//               '@md': {alignSelf: 'flex-start'},
-//             }}>
-//             <Text color="$white" fontWeight="$normal">
-//               Get started by editing
-//             </Text>
-//             <Text color="$white" fontWeight="$medium" ml="$2">
-//               App.tsx
-//             </Text>
-//           </Box>
-//           <Box
-//             flex={1}
-//             justifyContent="center"
-//             alignItems="center"
-//             sx={{
-//               '@base': {
-//                 h: 20,
-//                 w: 300,
-//               },
-//               '@lg': {
-//                 h: 160,
-//                 w: 400,
-//               },
-//             }}>
-//             {/* <Image src="/logo.svg" fill alt="logo" priority /> */}
-//           </Box>
-//           <Box
-//             sx={{
-//               '@base': {
-//                 flexDirection: 'column',
-//               },
-//               '@md': {
-//                 flexDirection: 'row',
-//               },
-//             }}>
-//             <FeatureCard
-//               iconSvg={documentImage}
-//               name="Docs"
-//               desc="Find in-depth information about gluestack features and API."
-//             />
-//             <FeatureCard
-//               iconSvg={lightbulbImage}
-//               name="Learn"
-//               desc="Learn about gluestack in an interactive course with quizzes!"
-//             />
-//             <FeatureCard
-//               iconSvg={rocketImage}
-//               name="Deploy"
-//               desc="Instantly drop your gluestack site to a shareable URL with vercel."
-//             />
-//           </Box>
-//         </Box>
-//       </ScrollView>
-//     </Box>
-//   );
-// };
-
-function App(): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  const [cameraPermission, setCameraPermission] =
-    useState<CameraPermissionStatus>();
-  const [microphonePermission, setMicrophonePermission] =
-    useState<CameraPermissionStatus>();
+  const [showCamera, setShowCamera] = useState(false);
+  const [imageSource, setImageSource] = useState('');
 
   useEffect(() => {
-    Camera.getCameraPermissionStatus().then(setCameraPermission);
-    Camera.getMicrophonePermissionStatus().then(setMicrophonePermission);
+    async function getPermission() {
+      const newCameraPermission = await Camera.requestCameraPermission();
+      console.log(newCameraPermission);
+    }
+    getPermission();
   }, []);
 
-  console.log(
-    `Re-rendering Navigator. Camera: ${cameraPermission} | Microphone: ${microphonePermission}`,
-  );
-
-  if (cameraPermission == null || microphonePermission == null) {
-    // still loading
-    return <></>;
-  }
-  const showPermissionsPage =
-    cameraPermission !== 'authorized' ||
-    microphonePermission === 'not-determined';
-  console.log(showPermissionsPage);
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-    // height: '100%',
+  const capturePhoto = async () => {
+    if (camera.current !== null) {
+      const photo = await camera.current.takePhoto({});
+      setImageSource(photo.path);
+      setShowCamera(false);
+      console.log(photo.path);
+    }
   };
 
+  if (device == null) {
+    return <Text>Camera not available</Text>;
+  }
+
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <GluestackUIProvider config={config}>
-        <Box
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}
-          height="100%">
-          {/* <Container /> */}
-          <Button
-            size="md"
-            variant="outline"
-            action="primary"
-            isDisabled={false}
-            isFocusVisible={false}>
-            <ButtonText>Add </ButtonText>
-          </Button>
-        </Box>
-      </GluestackUIProvider>
-    </SafeAreaView>
+    <View style={styles.container}>
+      {showCamera ? (
+        <>
+          <Camera
+            ref={camera}
+            style={StyleSheet.absoluteFill}
+            device={device}
+            isActive={showCamera}
+            photo={true}
+          />
+
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity
+              style={styles.camButton}
+              onPress={() => capturePhoto()}
+            />
+          </View>
+        </>
+      ) : (
+        <>
+          {imageSource !== '' ? (
+            <Image
+              style={styles.image}
+              source={{
+                uri: `file://'${imageSource}`,
+              }}
+            />
+          ) : null}
+
+          <View style={styles.backButton}>
+            <TouchableOpacity
+              style={{
+                backgroundColor: 'rgba(0,0,0,0.2)',
+                padding: 10,
+                justifyContent: 'center',
+                alignItems: 'center',
+                borderRadius: 10,
+                borderWidth: 2,
+                borderColor: '#fff',
+                width: 100,
+              }}
+              onPress={() => setShowCamera(true)}>
+              <Text style={{color: 'white', fontWeight: '500'}}>Back</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.buttonContainer}>
+            <View style={styles.buttons}>
+              <TouchableOpacity
+                style={{
+                  backgroundColor: '#fff',
+                  padding: 10,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  borderRadius: 10,
+                  borderWidth: 2,
+                  borderColor: '#77c3ec',
+                }}
+                onPress={() => setShowCamera(true)}>
+                <Text style={{color: '#77c3ec', fontWeight: '500'}}>
+                  Retake
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  backgroundColor: '#77c3ec',
+                  padding: 10,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  borderRadius: 10,
+                  borderWidth: 2,
+                  borderColor: 'white',
+                }}
+                onPress={() => setShowCamera(true)}>
+                <Text style={{color: 'white', fontWeight: '500'}}>
+                  Use Photo
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </>
+      )}
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  button: {
+    backgroundColor: 'gray',
+  },
+  backButton: {
+    backgroundColor: 'rgba(0,0,0,0.0)',
+    position: 'absolute',
+    justifyContent: 'center',
+    width: '100%',
+    top: 0,
+    padding: 20,
+  },
+  buttonContainer: {
+    backgroundColor: 'rgba(0,0,0,0.2)',
+    position: 'absolute',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    bottom: 0,
+    padding: 20,
+  },
+  buttons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
+  camButton: {
+    height: 80,
+    width: 80,
+    borderRadius: 40,
+    //ADD backgroundColor COLOR GREY
+    backgroundColor: '#B2BEB5',
+
+    alignSelf: 'center',
+    borderWidth: 4,
+    borderColor: 'white',
+  },
+  image: {
+    width: '100%',
+    height: '100%',
+    aspectRatio: 9 / 16,
+  },
+});
 
 export default App;
