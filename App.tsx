@@ -9,6 +9,9 @@ import {
   Image,
 } from 'react-native';
 import {Camera, useCameraDevices} from 'react-native-vision-camera';
+import axios from 'axios';
+
+const url = `https://4000-dekagalang-templateflut-kxev95zu6b9.ws-us107.gitpod.io`;
 
 function App() {
   const camera = useRef<any>(null);
@@ -26,12 +29,48 @@ function App() {
     getPermission();
   }, []);
 
+  async function upload(file: any) {
+    try {
+      var formData = new FormData();
+      formData.append('image', file);
+      // const url = new URL(request.url);
+      // const search = new URLSearchParams(url.search);
+      // if (!search.get("city")) return redirect("/");
+      // const city = search.get("city");
+      // const res = await axios.post(url);
+      await axios({
+        method: "post",
+        url: url,
+        data: formData,
+        headers: { "Content-Type": "multipart/form-data" },
+      })
+        .then(function (response) {
+          //handle success
+          console.log(response)
+          // setResImage(response.data)
+          // setBox(response.data.result[0].box)
+        })
+        .catch(function (response) {
+          //handle error
+          console.log(response);
+        });
+
+      // return res.data;
+      // return { city, type: res.data.weather[0].main, temp: res.data.main.temp };
+    } catch (err) {
+      console.error(err);
+      // redirect("/");
+      // return {};
+    }
+  }
+
   const capturePhoto = async () => {
     if (camera.current !== null) {
       const photo = await camera.current.takePhoto({});
       setImageSource(photo.path);
       setShowCamera(false);
-      console.log(photo.path);
+      // upload(photo.path);
+      console.log(photo);
     }
   };
 
