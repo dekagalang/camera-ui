@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useRef } from 'react';
+import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
   View,
   StyleSheet,
@@ -6,9 +6,10 @@ import {
   Image,
   Dimensions,
   StatusBar,
+  BackHandler,
   // Alert,
 } from 'react-native';
-import { Camera, useCameraDevices } from 'react-native-vision-camera';
+import {Camera, useCameraDevices} from 'react-native-vision-camera';
 import axios from 'axios';
 import {
   Heading,
@@ -24,8 +25,8 @@ import {
   AddIcon,
   ScrollView,
 } from '@gluestack-ui/themed';
-import { config } from '@gluestack-ui/config';
-import { Pressable } from '@gluestack-ui/themed';
+import {config} from '@gluestack-ui/config';
+import {Pressable} from '@gluestack-ui/themed';
 
 const windowWidth = Dimensions.get('window').width;
 // const windowHeight = Dimensions.get('window').height;
@@ -33,7 +34,7 @@ const windowWidth = Dimensions.get('window').width;
 const url =
   'https://4000-dekarosalia-templateflu-obnrxlgbglb.ws-us107.gitpod.io';
 
-function App() {
+function Home() {
   const [showCamera, setShowCamera] = useState(false);
   const [cameraDevice, setCameraDevice] = useState('back');
   const [resImage, setResImage] = useState<any | null>(null);
@@ -78,6 +79,21 @@ function App() {
       console.log(newCameraPermission);
     }
     getPermission();
+    const backAction = () => {
+      // if (!isSearch) {
+      //   navigation.goBack();
+      // } else {
+      //   setOptionHeader(isSearch);
+      // }
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+
+    return () => backHandler.remove();
   }, []);
 
   async function upload(photo: any) {
@@ -98,7 +114,7 @@ function App() {
         method: 'post',
         url: url,
         data: formData,
-        headers: { 'Content-Type': 'multipart/form-data' },
+        headers: {'Content-Type': 'multipart/form-data'},
       })
         .then(function (response) {
           //handle success
@@ -155,10 +171,7 @@ function App() {
 
   return (
     <GluestackUIProvider config={config}>
-      <StatusBar
-        animated={true}
-        backgroundColor="#6474ff"
-      />
+      <StatusBar animated={true} backgroundColor="#6474ff" />
       <ScrollView contentContainerStyle={styles.container}>
         {showCamera ? (
           <>
@@ -232,7 +245,7 @@ function App() {
                   Total ada (jumlah) wajah yang terdaftar
                 </Text>
                 <Button
-                  $active-bg='#dadade'
+                  $active-bg="#dadade"
                   paddingVertical={10}
                   backgroundColor="black"
                   width={140}
@@ -245,15 +258,14 @@ function App() {
               <VStack>
                 <HStack>
                   <Pressable
-                    $active-bg='#dadade'
+                    $active-bg="#dadade"
                     flex={1}
                     backgroundColor="#fff"
                     marginHorizontal={20}
                     marginTop={16}
                     padding={20}
                     borderRadius={12}
-                    height={200}
-                  >
+                    height={200}>
                     <Box>
                       <Heading marginVertical={0} fontSize={18} lineHeight={20}>
                         Laporan
@@ -394,17 +406,19 @@ function App() {
           </>
         )}
       </ScrollView>
-      <Fab
-        bgColor='black'
-        $active-bg='#dadade'
-        size="lg"
-        placement="bottom center"
-        isHovered={false}
-        isDisabled={false}
-        isPressed={false}
-      >
-        <FabIcon as={AddIcon} />
-      </Fab>
+      {!showCamera ? (
+        <Fab
+          bgColor="black"
+          $active-bg="#dadade"
+          size="lg"
+          placement="bottom center"
+          isHovered={false}
+          isDisabled={false}
+          isPressed={false}
+          onPress={() => setShowCamera(true)}>
+          <FabIcon as={AddIcon} />
+        </Fab>
+      ) : null}
     </GluestackUIProvider>
   );
 }
@@ -478,4 +492,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default App;
+export default Home;
