@@ -1,30 +1,18 @@
 import {NavigationContainer} from '@react-navigation/native';
 import React from 'react';
-import Home from '../Home';
+import Home from './pages/Home';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import Laporan from './pages/Laporan';
 
 const Stack = createNativeStackNavigator();
 
-export function Router(): React.ReactElement | null {
-  // const [cameraPermission, setCameraPermission] =
-  //   useState<CameraPermissionStatus>();
-  // const [microphonePermission, setMicrophonePermission] =
-  //   useState<CameraPermissionStatus>();
-
-  // useEffect(() => {
-  //   Camera.getCameraPermissionStatus().then(setCameraPermission);
-  //   Camera.getMicrophonePermissionStatus().then(setMicrophonePermission);
-  // }, []);
-
-  // const showPermissionsPage =
-  //   cameraPermission !== 'authorized' ||
-  //   microphonePermission === 'not-determined';
+export default function Router(): React.ReactElement | null {
   return (
     <NavigationContainer>
       <Stack.Navigator
         screenOptions={{
           headerShown: false,
-          statusBarStyle: 'dark',
+          statusBarStyle: 'auto',
           animationTypeForReplace: 'push',
         }}
         // initialRouteName={
@@ -32,6 +20,7 @@ export function Router(): React.ReactElement | null {
         // }>
         initialRouteName={'Home'}>
         {/* <Stack.Screen name="PermissionsPage" component={PermissionsPage} /> */}
+        <Stack.Screen name="Laporan" component={Laporan} />
         <Stack.Screen name="Home" component={Home} />
       </Stack.Navigator>
     </NavigationContainer>

@@ -182,7 +182,6 @@ function Home() {
               isActive={showCamera}
               photo={true}
             />
-
             <View style={styles.buttonContainer}>
               <TouchableOpacity
                 style={styles.camButton}
