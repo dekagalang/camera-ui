@@ -24,6 +24,7 @@ import {
   FabIcon,
   AddIcon,
   ScrollView,
+  Spinner,
 } from '@gluestack-ui/themed';
 import {config} from '@gluestack-ui/config';
 import {Pressable} from '@gluestack-ui/themed';
@@ -32,9 +33,9 @@ const windowWidth = Dimensions.get('window').width;
 // const windowHeight = Dimensions.get('window').height;
 
 const url =
-  'https://4000-dekarosalia-templateflu-obnrxlgbglb.ws-us107.gitpod.io';
+  'https://4000-dekagalang-templateflut-aho3n838iq2.ws-us107.gitpod.io';
 
-function Home() {
+function Home({navigation}:any) {
   const [showCamera, setShowCamera] = useState(false);
   const [cameraDevice, setCameraDevice] = useState('back');
   const [resImage, setResImage] = useState<any | null>(null);
@@ -80,12 +81,15 @@ function Home() {
     }
     getPermission();
     const backAction = () => {
-      // if (!isSearch) {
-      //   navigation.goBack();
-      // } else {
-      //   setOptionHeader(isSearch);
-      // }
-      return true;
+      if(showCamera === true) {
+        setShowCamera(false);
+        BackHandler.removeEventListener(
+          'hardwareBackPress',
+          backAction,
+        )
+        return true;
+      }
+      return false;
     };
 
     const backHandler = BackHandler.addEventListener(
@@ -94,7 +98,7 @@ function Home() {
     );
 
     return () => backHandler.remove();
-  }, []);
+  }, [showCamera]);
 
   async function upload(photo: any) {
     try {
@@ -166,7 +170,7 @@ function Home() {
   }
 
   if (device == null) {
-    return <Text>Camera not available</Text>;
+    return <Spinner size="large" />;
   }
 
   return (
@@ -264,7 +268,9 @@ function Home() {
                     marginTop={16}
                     padding={20}
                     borderRadius={12}
-                    height={200}>
+                    height={200}
+                    onPress={() => navigation.navigate('Laporan')}
+                    >
                     <Box>
                       <Heading marginVertical={0} fontSize={18} lineHeight={20}>
                         Laporan
