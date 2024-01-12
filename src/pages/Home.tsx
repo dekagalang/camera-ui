@@ -1,12 +1,12 @@
-import React, {useEffect, useState, useCallback, useRef} from 'react';
+import React, {useEffect, useState, useCallback, useRef, Fragment} from 'react';
 import {
   View,
   StyleSheet,
   TouchableOpacity,
   Image,
   Dimensions,
-  StatusBar,
   BackHandler,
+  StatusBar
   // Alert,
 } from 'react-native';
 import {Camera, useCameraDevices} from 'react-native-vision-camera';
@@ -17,7 +17,6 @@ import {
   Text,
   Button,
   ButtonText,
-  GluestackUIProvider,
   HStack,
   VStack,
   Fab,
@@ -26,7 +25,6 @@ import {
   ScrollView,
   Spinner,
 } from '@gluestack-ui/themed';
-import {config} from '@gluestack-ui/config';
 import {Pressable} from '@gluestack-ui/themed';
 
 const windowWidth = Dimensions.get('window').width;
@@ -176,7 +174,7 @@ function Home({navigation}: any) {
   }
 
   return (
-    <GluestackUIProvider config={config}>
+    <Fragment>
       <StatusBar animated={true} backgroundColor="#6474ff" />
       <ScrollView contentContainerStyle={styles.container}>
         {showCamera ? (
@@ -263,7 +261,7 @@ function Home({navigation}: any) {
                     <ButtonText color="#fff">Tambah</ButtonText>
                   </Button>
                 </Box>
-                <VStack>
+                <VStack marginBottom={20}>
                   <HStack>
                     <Pressable
                       $active-bg="#dadade"
@@ -432,7 +430,7 @@ function Home({navigation}: any) {
           <FabIcon as={AddIcon} />
         </Fab>
       ) : null}
-    </GluestackUIProvider>
+    </Fragment>
   );
 }
 
