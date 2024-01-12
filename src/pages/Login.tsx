@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-shadow */
 import {
   Button,
   ButtonText,
@@ -10,10 +11,10 @@ import {
   ScrollView,
   VStack,
 } from '@gluestack-ui/themed';
-import { useIsFocused } from '@react-navigation/native';
-import React, { useEffect, useState } from 'react';
+import {useIsFocused} from '@react-navigation/native';
+import React, {useEffect, useState} from 'react';
 import {StatusBar, StyleSheet, View, SafeAreaView} from 'react-native';
-import { account, ID } from '../lib/appwrite';
+import {account, ID} from '../lib/appwrite';
 
 function Login({navigation}: any) {
   const [loggedInUser, setLoggedInUser] = useState({name: ''});
@@ -22,18 +23,20 @@ function Login({navigation}: any) {
   const [name, setName] = useState('');
   const isFocused = useIsFocused();
 
-  async function login(email:string, password:string) {
+  async function login(email: string, password: string) {
     await account.createEmailSession(email, password);
     setLoggedInUser(await account.get());
-  };
+  }
 
   useEffect(() => {
     console.log(email);
-  },[email])
+  }, [email]);
 
   return (
     <SafeAreaView>
-      {isFocused ? <StatusBar animated={true} backgroundColor="#6474ff" /> : null}
+      {isFocused ? (
+        <StatusBar animated={true} backgroundColor="#6474ff" />
+      ) : null}
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.containerLogin}>
           <VStack margin={20}>
@@ -42,7 +45,10 @@ function Login({navigation}: any) {
               fontSize={20}
               lineHeight={20}
               color="#fff">
-              Welcome Back! {loggedInUser && loggedInUser.name != '' ? `Logged in as ${loggedInUser.name}` : 'Not logged in'}
+              Welcome Back!{' '}
+              {loggedInUser && loggedInUser.name !== ''
+                ? `Logged in as ${loggedInUser.name}`
+                : 'Not logged in'}
               {/* Welcome Back! */}
             </Heading>
             <Heading
@@ -59,7 +65,10 @@ function Login({navigation}: any) {
                 <FormControlLabelText color="#fff">Email</FormControlLabelText>
               </FormControlLabel>
               <Input variant="underlined">
-                <InputField color="#fff" onChange={(e) => setEmail(e.nativeEvent.text)} />
+                <InputField
+                  color="#fff"
+                  onChange={e => setEmail(e.nativeEvent.text)}
+                />
               </Input>
             </FormControl>
             <FormControl marginBottom={20}>
@@ -69,7 +78,11 @@ function Login({navigation}: any) {
                 </FormControlLabelText>
               </FormControlLabel>
               <Input variant="underlined">
-                <InputField color="#fff" type="password" onChange={(e) => setPassword(e.nativeEvent.text)} />
+                <InputField
+                  color="#fff"
+                  type="password"
+                  onChange={e => setPassword(e.nativeEvent.text)}
+                />
               </Input>
             </FormControl>
             <Button

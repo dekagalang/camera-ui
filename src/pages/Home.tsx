@@ -25,7 +25,7 @@ import {
   ScrollView,
   Spinner,
 } from '@gluestack-ui/themed';
-import { useIsFocused } from '@react-navigation/native';
+import {useIsFocused} from '@react-navigation/native';
 import {Pressable} from '@gluestack-ui/themed';
 
 const windowWidth = Dimensions.get('window').width;
@@ -177,7 +177,9 @@ function Home({navigation}: any) {
 
   return (
     <SafeAreaView>
-      {isFocused ? <StatusBar animated={true} backgroundColor="#6474ff" /> : null}
+      {isFocused ? (
+        <StatusBar animated={true} backgroundColor="#6474ff" />
+      ) : null}
       <ScrollView contentContainerStyle={styles.container}>
         {showCamera ? (
           <>
