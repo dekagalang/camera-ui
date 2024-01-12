@@ -35,9 +35,10 @@ const windowWidth = Dimensions.get('window').width;
 const url =
   'https://4000-dekagalang-templateflut-aho3n838iq2.ws-us107.gitpod.io';
 
-function Home({navigation}:any) {
+function Home({navigation}: any) {
   const [showCamera, setShowCamera] = useState(false);
-  const [cameraDevice, setCameraDevice] = useState('back');
+  const [loadingCapture, setLoadingCapture] = useState(false);
+  const [cameraDevice, setCameraDevice] = useState('front');
   const [resImage, setResImage] = useState<any | null>(null);
   // const [box, setBox] = useState<any | null>({
   //   x_max: 0,
@@ -81,12 +82,9 @@ function Home({navigation}:any) {
     }
     getPermission();
     const backAction = () => {
-      if(showCamera === true) {
+      if (showCamera === true) {
         setShowCamera(false);
-        BackHandler.removeEventListener(
-          'hardwareBackPress',
-          backAction,
-        )
+        BackHandler.removeEventListener('hardwareBackPress', backAction);
         return true;
       }
       return false;
@@ -125,10 +123,12 @@ function Home({navigation}:any) {
           console.log(response);
           // setBox(response.data.result[0].box);
           setResImage(response.data);
+          setLoadingCapture(false);
         })
         .catch(function (response) {
           //handle error
           console.log(response);
+          setLoadingCapture(false);
         });
 
       // return res.data;
@@ -137,6 +137,7 @@ function Home({navigation}:any) {
       // console.error(err);
       // redirect("/");
       // return {};
+      setLoadingCapture(false);
     }
   }
 
@@ -151,6 +152,7 @@ function Home({navigation}:any) {
   //   ]);
 
   const capturePhoto = async () => {
+    setLoadingCapture(true);
     if (camera.current !== null) {
       const photo = await camera.current.takePhoto({});
       // createTwoButtonAlert(photo.width, photo.height);
@@ -195,7 +197,9 @@ function Home({navigation}:any) {
           </>
         ) : (
           <>
-            {imageSource !== '' && resImage !== null ? (
+            {loadingCapture ? (
+              <Spinner size="large" />
+            ) : imageSource !== '' && resImage !== null ? (
               <>
                 <Image
                   style={styles.image}
@@ -203,143 +207,147 @@ function Home({navigation}:any) {
                     uri: `file://'${imageSource.path}`,
                   }}
                 />
-                {resImage.map((item: any) => (
-                  <View
-                    style={{
-                      ...styles.box,
-                      top: item.box.y_min,
-                      left: item.box.x_min,
-                      width: item.box.x_max - item.box.x_min,
-                      height: item.box.y_max - item.box.y_min,
-                    }}
-                  />
-                ))}
+                {resImage.length > 0 &&
+                  resImage.map((item: any) => (
+                    <View
+                      style={{
+                        ...styles.box,
+                        top: item.box.y_min,
+                        left: item.box.x_min,
+                        width: item.box.x_max - item.box.x_min,
+                        height: item.box.y_max - item.box.y_min,
+                      }}
+                    />
+                  ))}
               </>
-            ) : null}
-            <View style={styles.containerHome}>
-              <Heading
-                marginTop={20}
-                marginBottom={4}
-                marginHorizontal={20}
-                fontSize={20}
-                color="#fff"
-                lineHeight={20}>
-                Halo (username)
-              </Heading>
-              <Heading
-                marginVertical={0}
-                marginHorizontal={20}
-                fontSize={16}
-                color="#fff"
-                fontWeight="400"
-                lineHeight={20}>
-                Selamat Sore
-              </Heading>
-              <Box
-                backgroundColor="#fff"
-                marginHorizontal={20}
-                marginTop={16}
-                padding={20}
-                borderRadius={12}>
-                <Heading marginVertical={0} fontSize={18} lineHeight={20}>
-                  Jumlah Terdaftar
-                </Heading>
-                <Text marginTop={4} color="black">
-                  Total ada (jumlah) wajah yang terdaftar
-                </Text>
-                <Button
-                  $active-bg="#dadade"
-                  paddingVertical={10}
-                  backgroundColor="black"
-                  width={140}
-                  borderRadius={100}
+            ) : (
+              <View style={styles.containerHome}>
+                <Heading
                   marginTop={20}
-                  alignItems="center">
-                  <ButtonText color="#fff">Tambah</ButtonText>
-                </Button>
-              </Box>
-              <VStack>
-                <HStack>
-                  <Pressable
+                  marginBottom={4}
+                  marginHorizontal={20}
+                  fontSize={20}
+                  color="#fff"
+                  lineHeight={20}>
+                  Halo (username)
+                </Heading>
+                <Heading
+                  marginVertical={0}
+                  marginHorizontal={20}
+                  fontSize={16}
+                  color="#fff"
+                  fontWeight="400"
+                  lineHeight={20}>
+                  Selamat Sore
+                </Heading>
+                <Box
+                  backgroundColor="#fff"
+                  marginHorizontal={20}
+                  marginTop={16}
+                  padding={20}
+                  borderRadius={12}>
+                  <Heading marginVertical={0} fontSize={18} lineHeight={20}>
+                    Jumlah Terdaftar
+                  </Heading>
+                  <Text marginTop={4} color="black">
+                    Total ada (jumlah) wajah yang terdaftar
+                  </Text>
+                  <Button
                     $active-bg="#dadade"
-                    flex={1}
-                    backgroundColor="#fff"
-                    marginHorizontal={20}
-                    marginTop={16}
-                    padding={20}
-                    borderRadius={12}
-                    height={200}
-                    onPress={() => navigation.navigate('Laporan')}
-                    >
-                    <Box>
-                      <Heading marginVertical={0} fontSize={18} lineHeight={20}>
-                        Laporan
+                    paddingVertical={10}
+                    backgroundColor="black"
+                    width={140}
+                    borderRadius={100}
+                    marginTop={20}
+                    alignItems="center">
+                    <ButtonText color="#fff">Tambah</ButtonText>
+                  </Button>
+                </Box>
+                <VStack>
+                  <HStack>
+                    <Pressable
+                      $active-bg="#dadade"
+                      flex={1}
+                      backgroundColor="#fff"
+                      marginHorizontal={20}
+                      marginTop={16}
+                      padding={20}
+                      borderRadius={12}
+                      height={200}
+                      onPress={() => navigation.navigate('Laporan')}>
+                      <Box>
+                        <Heading
+                          marginVertical={0}
+                          fontSize={18}
+                          lineHeight={20}>
+                          Laporan
+                        </Heading>
+                        <Text marginTop={4} color="black">
+                          Laporan Absensi
+                        </Text>
+                      </Box>
+                    </Pressable>
+                    <Box
+                      backgroundColor="transparent"
+                      borderColor="#dadade"
+                      borderWidth={2}
+                      marginRight={20}
+                      marginTop={16}
+                      padding={20}
+                      borderRadius={12}
+                      flex={1}
+                      height={200}>
+                      <Heading
+                        marginVertical={0}
+                        fontSize={18}
+                        lineHeight={20}
+                        color="#fff">
+                        Coming Soon
                       </Heading>
-                      <Text marginTop={4} color="black">
-                        Laporan Absensi
-                      </Text>
                     </Box>
-                  </Pressable>
-                  <Box
-                    backgroundColor="transparent"
-                    borderColor="#dadade"
-                    borderWidth={2}
-                    marginRight={20}
-                    marginTop={16}
-                    padding={20}
-                    borderRadius={12}
-                    flex={1}
-                    height={200}>
-                    <Heading
-                      marginVertical={0}
-                      fontSize={18}
-                      lineHeight={20}
-                      color="#fff">
-                      Coming Soon
-                    </Heading>
-                  </Box>
-                </HStack>
-                <HStack>
-                  <Box
-                    backgroundColor="transparent"
-                    marginLeft={20}
-                    borderColor="#dadade"
-                    borderWidth={2}
-                    marginHorizontal={20}
-                    marginTop={16}
-                    padding={20}
-                    borderRadius={12}
-                    flex={1}
-                    height={200}>
-                    <Heading
-                      marginVertical={0}
-                      fontSize={18}
-                      lineHeight={20}
-                      color="#fff">
-                      Coming Soon
-                    </Heading>
-                  </Box>
-                  <Box
-                    backgroundColor="transparent"
-                    borderColor="#dadade"
-                    borderWidth={2}
-                    marginRight={20}
-                    marginTop={16}
-                    padding={20}
-                    borderRadius={12}
-                    flex={1}
-                    height={200}>
-                    <Heading
-                      marginVertical={0}
-                      fontSize={18}
-                      lineHeight={20}
-                      color="#fff">
-                      Coming Soon
-                    </Heading>
-                  </Box>
-                </HStack>
-              </VStack>
-            </View>
+                  </HStack>
+                  <HStack>
+                    <Box
+                      backgroundColor="transparent"
+                      marginLeft={20}
+                      borderColor="#dadade"
+                      borderWidth={2}
+                      marginHorizontal={20}
+                      marginTop={16}
+                      padding={20}
+                      borderRadius={12}
+                      flex={1}
+                      height={200}>
+                      <Heading
+                        marginVertical={0}
+                        fontSize={18}
+                        lineHeight={20}
+                        color="#fff">
+                        Coming Soon
+                      </Heading>
+                    </Box>
+                    <Box
+                      backgroundColor="transparent"
+                      borderColor="#dadade"
+                      borderWidth={2}
+                      marginRight={20}
+                      marginTop={16}
+                      padding={20}
+                      borderRadius={12}
+                      flex={1}
+                      height={200}>
+                      <Heading
+                        marginVertical={0}
+                        fontSize={18}
+                        lineHeight={20}
+                        color="#fff">
+                        Coming Soon
+                      </Heading>
+                    </Box>
+                  </HStack>
+                </VStack>
+              </View>
+            )}
 
             {/* <View style={styles.backButton}>
             <TouchableOpacity
@@ -420,7 +428,7 @@ function Home({navigation}:any) {
           isHovered={false}
           isDisabled={false}
           isPressed={false}
-          onPress={() => setShowCamera(true)}>
+          onPress={() => reset()}>
           <FabIcon as={AddIcon} />
         </Fab>
       ) : null}
@@ -479,7 +487,6 @@ const styles = StyleSheet.create({
   image: {
     width: '100%',
     height: '100%',
-    aspectRatio: 9 / 16,
   },
   containerHome: {
     backgroundColor: '#6474ff',
