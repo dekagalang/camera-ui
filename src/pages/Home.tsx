@@ -6,7 +6,7 @@ import {
   Image,
   Dimensions,
   BackHandler,
-  StatusBar
+  StatusBar,
   // Alert,
 } from 'react-native';
 import {Camera, useCameraDevices} from 'react-native-vision-camera';
@@ -252,7 +252,6 @@ function Home({navigation}: any) {
                   </Text>
                   <Button
                     $active-bg="#dadade"
-                    paddingVertical={10}
                     backgroundColor="black"
                     width={140}
                     borderRadius={100}

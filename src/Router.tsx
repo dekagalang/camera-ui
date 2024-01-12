@@ -1,12 +1,12 @@
-import { NavigationContainer } from '@react-navigation/native';
+import {NavigationContainer} from '@react-navigation/native';
 import React from 'react';
 import Home from './pages/Home';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Laporan from './pages/Laporan';
 import Register from './pages/Register';
 import Login from './pages/Login';
-import { GluestackUIProvider } from '@gluestack-ui/themed';
-import { config } from '@gluestack-ui/config';
+import {GluestackUIProvider} from '@gluestack-ui/themed';
+import {config} from '@gluestack-ui/config';
 
 const Stack = createNativeStackNavigator();
 
