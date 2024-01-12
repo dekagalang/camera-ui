@@ -7,7 +7,7 @@ import {
   Dimensions,
   BackHandler,
   StatusBar,
-  // Alert,
+  SafeAreaView,
 } from 'react-native';
 import {Camera, useCameraDevices} from 'react-native-vision-camera';
 import axios from 'axios';
@@ -25,6 +25,7 @@ import {
   ScrollView,
   Spinner,
 } from '@gluestack-ui/themed';
+import { useIsFocused } from '@react-navigation/native';
 import {Pressable} from '@gluestack-ui/themed';
 
 const windowWidth = Dimensions.get('window').width;
@@ -51,6 +52,7 @@ function Home({navigation}: any) {
   const camera = useRef<any>(null);
   const devices = useCameraDevices();
   const device = cameraDevice === 'back' ? devices.back : devices.front;
+  const isFocused = useIsFocused();
 
   function useStateCallback(initialState: any) {
     const [state, setState] = useState(initialState);
@@ -174,8 +176,8 @@ function Home({navigation}: any) {
   }
 
   return (
-    <Fragment>
-      <StatusBar animated={true} backgroundColor="#6474ff" />
+    <SafeAreaView>
+      {isFocused ? <StatusBar animated={true} backgroundColor="#6474ff" /> : null}
       <ScrollView contentContainerStyle={styles.container}>
         {showCamera ? (
           <>
@@ -429,7 +431,7 @@ function Home({navigation}: any) {
           <FabIcon as={AddIcon} />
         </Fab>
       ) : null}
-    </Fragment>
+    </SafeAreaView>
   );
 }
 

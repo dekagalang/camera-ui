@@ -10,13 +10,15 @@ import {
   ScrollView,
   VStack,
 } from '@gluestack-ui/themed';
-import React, {Fragment} from 'react';
-import {StatusBar, StyleSheet, View} from 'react-native';
+import { useIsFocused } from '@react-navigation/native';
+import React from 'react';
+import {StatusBar, StyleSheet, View, SafeAreaView} from 'react-native';
 
 function Login({navigation}: any) {
+  const isFocused = useIsFocused();
   return (
-    <Fragment>
-      <StatusBar animated={true} backgroundColor="#6474ff" />
+    <SafeAreaView>
+      {isFocused ? <StatusBar animated={true} backgroundColor="#6474ff" /> : null}
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.containerLogin}>
           <VStack margin={20}>
@@ -36,7 +38,7 @@ function Login({navigation}: any) {
               color="#fff">
               Please login to your account.
             </Heading>
-            <FormControl marginBottom={20}>
+            <FormControl marginBottom={20} marginTop={30}>
               <FormControlLabel>
                 <FormControlLabelText color="#fff">Email</FormControlLabelText>
               </FormControlLabel>
@@ -44,7 +46,7 @@ function Login({navigation}: any) {
                 <InputField color="#fff" />
               </Input>
             </FormControl>
-            <FormControl>
+            <FormControl marginBottom={20}>
               <FormControlLabel>
                 <FormControlLabelText color="#fff">
                   Password
@@ -69,13 +71,14 @@ function Login({navigation}: any) {
               borderColor="transparent"
               borderRadius={100}
               marginTop={20}
-              alignItems="center">
+              alignItems="center"
+              onPress={() => navigation.navigate('Register')}>
               <ButtonText color="#fff">Register</ButtonText>
             </Button>
           </VStack>
         </View>
       </ScrollView>
-    </Fragment>
+    </SafeAreaView>
   );
 }
 
