@@ -15,6 +15,14 @@ import {useIsFocused} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
 import {StatusBar, StyleSheet, View, SafeAreaView} from 'react-native';
 import {account, ID} from '../lib/appwrite';
+import { MMKV } from 'react-native-mmkv'
+
+export const storage = new MMKV()
+// const storage = new MMKV({
+//   id: `user-${userId}-storage`,
+//   path: `${USER_DIRECTORY}/storage`,
+//   encryptionKey: 'hunter2'
+// })
 
 function Login({navigation}: any) {
   const [loggedInUser, setLoggedInUser] = useState({name: ''});
@@ -29,8 +37,14 @@ function Login({navigation}: any) {
   }
 
   useEffect(() => {
-    console.log(email);
-  }, [email]);
+    storage.set('user.age', 21)
+    const age = storage.getNumber('user.age')
+    // const keys = storage.getAllKeys() // ['user.name', 'user.age', 'is-mmkv-fast-asf']
+    // storage.delete('user.name')
+    // storage.clearAll()
+    // const hasUsername = storage.contains('user.name')
+    console.log(age)
+  },[])
 
   return (
     <SafeAreaView>
@@ -102,12 +116,12 @@ function Login({navigation}: any) {
               borderRadius={100}
               marginTop={20}
               alignItems="center"
-              // onPress={() => navigation.navigate('Register')}>
               // onPress={() => login(email, password)}>
-              onPress={async () => {
-                await account.create(ID.unique(), email, password, name);
-                login(email, password);
-              }}>
+              // onPress={async () => {
+                //   await account.create(ID.unique(), email, password, name);
+              //   login(email, password);
+              // }}>
+              onPress={() => navigation.navigate('Register')}>
               <ButtonText color="#fff">Register</ButtonText>
             </Button>
           </VStack>
