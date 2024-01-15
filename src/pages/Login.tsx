@@ -15,9 +15,9 @@ import {useIsFocused} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
 import {StatusBar, StyleSheet, View, SafeAreaView} from 'react-native';
 import {account, ID} from '../lib/appwrite';
-import { MMKV } from 'react-native-mmkv'
+import { _retrieveData, _storeData } from '../services/asyncStorage';
 
-export const storage = new MMKV()
+// export const storage = new MMKV()
 // const storage = new MMKV({
 //   id: `user-${userId}-storage`,
 //   path: `${USER_DIRECTORY}/storage`,
@@ -37,14 +37,12 @@ function Login({navigation}: any) {
   }
 
   useEffect(() => {
-    storage.set('user.age', 21)
-    const age = storage.getNumber('user.age')
-    // const keys = storage.getAllKeys() // ['user.name', 'user.age', 'is-mmkv-fast-asf']
-    // storage.delete('user.name')
-    // storage.clearAll()
-    // const hasUsername = storage.contains('user.name')
-    console.log(age)
-  },[])
+    const storeData = async () => {
+      await _storeData('test', 'data');
+      console.log(await _retrieveData('test'));
+    };
+    storeData();
+  }, []);
 
   return (
     <SafeAreaView>
