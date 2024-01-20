@@ -11,37 +11,33 @@ import {
   ScrollView,
   VStack,
 } from '@gluestack-ui/themed';
-import {useIsFocused} from '@react-navigation/native';
-import React, {useEffect, useState} from 'react';
-import {StatusBar, StyleSheet, View, SafeAreaView} from 'react-native';
-import {account, ID} from '../lib/appwrite';
-import { _retrieveData, _storeData } from '../services/asyncStorage';
+import { useIsFocused } from '@react-navigation/native';
+import React, { useEffect, useState } from 'react';
+import { StatusBar, StyleSheet, View, SafeAreaView } from 'react-native';
+import { account, ID } from '../lib/appwrite';
+import { _clearAllData, _retrieveData, _storeData } from '../services/asyncStorage';
 
-// export const storage = new MMKV()
-// const storage = new MMKV({
-//   id: `user-${userId}-storage`,
-//   path: `${USER_DIRECTORY}/storage`,
-//   encryptionKey: 'hunter2'
-// })
-
-function Login({navigation}: any) {
-  const [loggedInUser, setLoggedInUser] = useState({name: ''});
+function Login({ navigation, route }: any) {
+  // const [loggedInUser, setLoggedInUser] = useState({ name: '' });
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
+  // const [name, setName] = useState('');
   const isFocused = useIsFocused();
+  const { setLoggedInUser } = route.params;
 
   async function login(email: string, password: string) {
     await account.createEmailSession(email, password);
-    setLoggedInUser(await account.get());
+    const dataLogin = await account.get();
+    await _storeData('session', JSON.stringify(dataLogin));
+    setLoggedInUser(dataLogin);
   }
 
   useEffect(() => {
-    const storeData = async () => {
-      await _storeData('test', 'data');
-      console.log(await _retrieveData('test'));
+    const runLocalStorage = async () => {
+      // console.log(await _retrieveData('session'));
+      // await _clearAllData()
     };
-    storeData();
+    runLocalStorage();
   }, []);
 
   return (
@@ -57,11 +53,7 @@ function Login({navigation}: any) {
               fontSize={20}
               lineHeight={20}
               color="#fff">
-              Welcome Back!{' '}
-              {loggedInUser && loggedInUser.name !== ''
-                ? `Logged in as ${loggedInUser.name}`
-                : 'Not logged in'}
-              {/* Welcome Back! */}
+              Welcome Back!
             </Heading>
             <Heading
               marginVertical={10}
@@ -79,6 +71,7 @@ function Login({navigation}: any) {
               <Input variant="underlined">
                 <InputField
                   color="#fff"
+                  placeholderTextColor="#fff"
                   onChange={e => setEmail(e.nativeEvent.text)}
                 />
               </Input>
@@ -93,6 +86,7 @@ function Login({navigation}: any) {
                 <InputField
                   color="#fff"
                   type="password"
+                  placeholderTextColor="#fff"
                   onChange={e => setPassword(e.nativeEvent.text)}
                 />
               </Input>
@@ -103,8 +97,8 @@ function Login({navigation}: any) {
               borderRadius={100}
               marginTop={20}
               alignItems="center"
-              // onPress={() => navigation.navigate('Home')}>
               onPress={() => login(email, password)}>
+              {/* onPress={() => navigation.navigate('Home')}> */}
               <ButtonText color="#fff">Login</ButtonText>
             </Button>
             <Button
@@ -116,7 +110,7 @@ function Login({navigation}: any) {
               alignItems="center"
               // onPress={() => login(email, password)}>
               // onPress={async () => {
-                //   await account.create(ID.unique(), email, password, name);
+              //   await account.create(ID.unique(), email, password, name);
               //   login(email, password);
               // }}>
               onPress={() => navigation.navigate('Register')}>

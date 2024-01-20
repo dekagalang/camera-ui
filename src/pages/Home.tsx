@@ -34,7 +34,7 @@ const windowWidth = Dimensions.get('window').width;
 const url =
   'https://4000-dekagalang-templateflut-aho3n838iq2.ws-us107.gitpod.io';
 
-function Home({navigation}: any) {
+function Home({navigation, route}: any) {
   const [showCamera, setShowCamera] = useState(false);
   const [loadingCapture, setLoadingCapture] = useState(false);
   const [cameraDevice, setCameraDevice] = useState('front');
@@ -53,6 +53,8 @@ function Home({navigation}: any) {
   const devices = useCameraDevices();
   const device = cameraDevice === 'back' ? devices.back : devices.front;
   const isFocused = useIsFocused();
+  let { loggedInUser } = route.params;
+  loggedInUser = JSON.parse(loggedInUser);
 
   function useStateCallback(initialState: any) {
     const [state, setState] = useState(initialState);
@@ -231,7 +233,7 @@ function Home({navigation}: any) {
                   fontSize={20}
                   color="#fff"
                   lineHeight={20}>
-                  Halo (username)
+                  Halo {loggedInUser.name}
                 </Heading>
                 <Heading
                   marginVertical={0}
