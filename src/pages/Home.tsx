@@ -54,7 +54,7 @@ function Home({navigation, route}: any) {
   const device = cameraDevice === 'back' ? devices.back : devices.front;
   const isFocused = useIsFocused();
   let { loggedInUser } = route.params;
-  loggedInUser = JSON.parse(loggedInUser);
+  // loggedInUser = JSON.parse(loggedInUser);
 
   function useStateCallback(initialState: any) {
     const [state, setState] = useState(initialState);
