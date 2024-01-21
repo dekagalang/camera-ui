@@ -27,6 +27,7 @@ import {
 } from '@gluestack-ui/themed';
 import {useIsFocused} from '@react-navigation/native';
 import {Pressable} from '@gluestack-ui/themed';
+import { useStateCallback } from '../services/utils';
 
 const windowWidth = Dimensions.get('window').width;
 // const windowHeight = Dimensions.get('window').height;
@@ -55,27 +56,6 @@ function Home({navigation, route}: any) {
   const isFocused = useIsFocused();
   let { loggedInUser } = route.params;
   // loggedInUser = JSON.parse(loggedInUser);
-
-  function useStateCallback(initialState: any) {
-    const [state, setState] = useState(initialState);
-    const cbRef = useRef<any>(null); // init mutable ref container for callbacks
-
-    const setStateCallback = useCallback((value: any, cb: null) => {
-      cbRef.current = cb; // store current, passed callback in ref
-      setState(value);
-    }, []); // keep object reference stable, exactly like `useState`
-
-    useEffect(() => {
-      // cb.current is `null` on initial render,
-      // so we only invoke callback on state *updates*
-      if (cbRef.current) {
-        cbRef.current(state);
-        cbRef.current = null; // reset callback after execution
-      }
-    }, [state]);
-
-    return [state, setStateCallback];
-  }
 
   useEffect(() => {
     async function getPermission() {
