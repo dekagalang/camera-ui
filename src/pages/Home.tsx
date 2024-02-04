@@ -55,7 +55,9 @@ function Home({navigation, route}: any) {
   const device = cameraDevice === 'back' ? devices.back : devices.front;
   const isFocused = useIsFocused();
   let { loggedInUser } = route.params;
-  // loggedInUser = JSON.parse(loggedInUser);
+  if(typeof loggedInUser === 'string') {
+    loggedInUser = JSON.parse(loggedInUser);
+  }
 
   useEffect(() => {
     async function getPermission() {
@@ -158,7 +160,7 @@ function Home({navigation, route}: any) {
   }
 
   return (
-    <SafeAreaView>
+    <Fragment>
       {isFocused ? (
         <StatusBar animated={true} backgroundColor="#6474ff" />
       ) : null}
@@ -415,7 +417,7 @@ function Home({navigation, route}: any) {
           <FabIcon as={AddIcon} />
         </Fab>
       ) : null}
-    </SafeAreaView>
+    </Fragment>
   );
 }
 

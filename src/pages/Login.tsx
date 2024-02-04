@@ -12,7 +12,7 @@ import {
   VStack,
 } from '@gluestack-ui/themed';
 import { useIsFocused } from '@react-navigation/native';
-import React, { useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { StatusBar, StyleSheet, View, SafeAreaView } from 'react-native';
 import { account, ID } from '../lib/appwrite';
 import { _clearAllData, _retrieveData, _storeData } from '../services/asyncStorage';
@@ -41,7 +41,7 @@ function Login({ navigation, route }: any) {
   }, []);
 
   return (
-    <SafeAreaView>
+    <Fragment>
       {isFocused ? (
         <StatusBar animated={true} backgroundColor="#6474ff" />
       ) : null}
@@ -119,7 +119,7 @@ function Login({ navigation, route }: any) {
           </VStack>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </Fragment>
   );
 }
 

@@ -44,7 +44,7 @@ function Register({ navigation }: any) {
                 <FormControlLabelText color="#fff">Name</FormControlLabelText>
               </FormControlLabel>
               <Input variant="underlined">
-                <InputField color="#fff" onChange={e => setName(e.nativeEvent.text)}/>
+                <InputField color="#fff" placeholderTextColor="#fff" onChange={e => setName(e.nativeEvent.text)}/>
               </Input>
             </FormControl>
             <FormControl marginBottom={20}>
@@ -52,7 +52,7 @@ function Register({ navigation }: any) {
                 <FormControlLabelText color="#fff">Email</FormControlLabelText>
               </FormControlLabel>
               <Input variant="underlined">
-                <InputField color="#fff" onChange={e => setEmail(e.nativeEvent.text)} />
+                <InputField color="#fff" placeholderTextColor="#fff" onChange={e => setEmail(e.nativeEvent.text)} />
               </Input>
             </FormControl>
             <FormControl marginBottom={20}>
@@ -62,7 +62,7 @@ function Register({ navigation }: any) {
                 </FormControlLabelText>
               </FormControlLabel>
               <Input variant="underlined">
-                <InputField color="#fff" type="password" onChange={e => setPassword(e.nativeEvent.text)} />
+                <InputField color="#fff" placeholderTextColor="#fff" type="password" onChange={e => setPassword(e.nativeEvent.text)} />
               </Input>
             </FormControl>
             <Button

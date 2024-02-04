@@ -32,8 +32,8 @@ export default function Router(): React.ReactElement | null {
         <Stack.Navigator
           screenOptions={{
             headerShown: false,
-            statusBarStyle: 'auto',
             animationTypeForReplace: 'push',
+            animation: 'fade'
           }}
         // initialRouteName={
         //   showPermissionsPage ? 'PermissionsPage' : 'CameraPage'
